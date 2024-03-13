@@ -10,16 +10,13 @@ namespace Aliquota.API.Models
 
         public static ProductDto ConvertToDto(ProductModel produto)
         {
-            var dtoConta = new ContaDto()
-            {
-                Id = produto.IdConta
-            };
-
             var dto = new ProductDto()
             {
                 DtAplicacao = produto.DtAplicacao, 
+                DtResgate = DateTime.MinValue,
                 Valor = produto.Valor, 
-                Conta = dtoConta
+                IdConta = produto.IdConta, 
+                Ativo = true
             };
 
             return dto;

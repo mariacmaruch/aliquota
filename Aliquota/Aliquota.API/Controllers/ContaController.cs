@@ -22,14 +22,14 @@ namespace Aliquota.API.Controllers
         }
 
         [HttpPost]
-        [Route("depositar/{id}")]
-        public IActionResult Depositar(int id, ContaModel conta)
+        [Route("depositar")]
+        public IActionResult Depositar(ContaModel conta)
         {
             try
             {
                 var contaDto = ContaModel.ConvertToDto(conta);
 
-                var result = _contaService.Depositar(id, contaDto);
+                var result = _contaService.Depositar(contaDto);
 
                 return Ok(result);
             }

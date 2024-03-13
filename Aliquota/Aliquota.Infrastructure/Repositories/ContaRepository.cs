@@ -16,11 +16,10 @@ namespace Aliquota.Infrastructure.Repositories
         {
             var contaEntity = _context.ContaEntity.FirstOrDefault(x => x.Id == conta.Id);
 
-            contaEntity.Saldo += conta.Saldo;
+            contaEntity.Saldo = conta.Saldo;
             _context.SaveChanges();
 
             return contaEntity;
-
         }
 
         public ContaEntity Get(int id)
@@ -28,9 +27,25 @@ namespace Aliquota.Infrastructure.Repositories
             return _context.ContaEntity.FirstOrDefault(x => x.Id == id);
         }
 
+        public ContaEntity GetByNumero(int numero)
+        {
+            return _context.ContaEntity.FirstOrDefault(x => x.Numero == numero);
+        }
+
         public IEnumerable<int> GetNumerosConta()
         {
             return _context.ContaEntity.Select(x => x.Numero);
+        }
+
+        public ContaEntity ValorAplicado(int id, double valAplicado, double valSaldo)
+        {
+            var contaEntity = _context.ContaEntity.FirstOrDefault(x => x.Id == id);
+            contaEntity.ValorAplicado = valAplicado;
+            contaEntity.Saldo = valSaldo;
+
+            _context.SaveChanges();
+
+            return contaEntity; 
         }
     }
 }

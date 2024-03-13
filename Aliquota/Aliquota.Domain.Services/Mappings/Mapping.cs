@@ -11,7 +11,7 @@ namespace Aliquota.Domain.Mappings
         {
             CreateMap<UserDto, UserEntity>().ReverseMap().ForPath(u => u.Conta.Id, map => map.MapFrom(src => src.IdConta));
             CreateMap<ContaDto, ContaEntity>().ReverseMap();
-            CreateMap<ProductDto, ProductEntity>().ReverseMap().ForPath(u => u.Conta.Id, map => map.MapFrom(src => src.IdConta));
+            CreateMap<ProductDto, ProductEntity>().ReverseMap();
         }
     }
 }

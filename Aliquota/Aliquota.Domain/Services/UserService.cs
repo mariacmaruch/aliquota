@@ -33,6 +33,8 @@ namespace Aliquota.Domain.Services.Services
         {
             ValidateId(id);
 
+            ValidateNumero(user.Conta.Numero);
+
             var usuario = _userRepository.Get(id);
 
             if(usuario.Email != user.Email)
@@ -60,9 +62,19 @@ namespace Aliquota.Domain.Services.Services
             if(_userRepository.GetEmail().Contains(email))
                 throw new InvalidEmailException("Email já cadastrado");
         }
+        
+        private void ValidateNumero(int numero)
+        {
+            if (_contaRepository.GetNumerosConta().Contains(numero))
+            {
+                throw new InvalidEmailException("Número de conta já cadastrado");
+            }
+        }
 
         public UserDto Get(int id)
         {
+            ValidateId(id);
+
             var usuario = _userRepository.Get(id);
 
             var usuarioDto = _mapper.Map<UserDto>(usuario);

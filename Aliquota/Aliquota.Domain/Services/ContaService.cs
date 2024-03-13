@@ -18,12 +18,6 @@ namespace Aliquota.Domain.Services.Services
             _mapper = mapper;
         }
 
-        private void ValidateId(int id)
-        {
-            if (_contaRepository.Get(id) == null)
-                throw new InvalidContaException("Conta não encontrada.");
-        }
-
         private void ValidateNumero(int numero)
         {
             if(!_contaRepository.GetNumerosConta().Contains(numero))
@@ -37,14 +31,15 @@ namespace Aliquota.Domain.Services.Services
             return _mapper.Map<ContaDto>(conta);
         }
 
-        public ContaDto Depositar(int id, ContaDto conta)
+        public ContaDto Depositar(ContaDto conta)
         {
-            ValidateId(id);
-
             ValidateNumero(conta.Numero);
 
+            var contaExistente = _contaRepository.GetByNumero(conta.Numero);
+
             var contaEntity = _mapper.Map<ContaEntity>(conta);
-            contaEntity.Id = id; 
+            contaEntity.Id = contaExistente.Id;
+            contaEntity.Saldo += contaExistente.Saldo;
 
             var deposito = _contaRepository.Depositar(contaEntity);
 

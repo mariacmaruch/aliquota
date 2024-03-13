@@ -11,7 +11,6 @@ namespace Aliquota.Infrastructure.Repositories
 
         public DbSet<UserEntity> UserEntity { get; set;}
         public DbSet<ContaEntity> ContaEntity { get; set; }
-
         public DbSet<ProductEntity> ProductEntity { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

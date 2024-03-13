@@ -11,37 +11,42 @@ namespace Aliquota.Domain.Services.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        private readonly IContaService _contaService; 
+        private readonly IContaRepository _contaRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IMapper mapper, IContaService contaService)
+        public ProductService(IProductRepository productRepository, IMapper mapper, IContaRepository contaRepository)
         {
             _productRepository = productRepository;
             _mapper = mapper;
-            _contaService = contaService;
+            _contaRepository = contaRepository;
         }
 
         private void ValidateConta(int id)
         {
-            if (_contaService.Get(id) == null)
+            if (_contaRepository.Get(id) == null)
                 throw new InvalidContaException("Conta não encontrada.");
         }
 
         public ProductDto Aplicar(ProductDto product)
         {
-            ValidateConta(product.Conta.Id);
+            ValidateConta(product.IdConta);
 
             if(product.Valor <= 0)
             {
                 throw new InvalidProductException("Valor aplicado não pode ser menor ou igual a zero.");
             }
 
-            var conta = _contaService.Get(product.Conta.Id);
+            var conta = _contaRepository.Get(product.IdConta);
 
-            if(conta.Saldo < product.Valor)
+            if (conta.Saldo < product.Valor)
             {
                 throw new InvalidProductException("Não é possível aplicar o valor, pois o saldo disponível é insuficiente.");
             }
+
+            conta.ValorAplicado += product.Valor;
+            conta.Saldo -= product.Valor;
+
+            _contaRepository.ValorAplicado(product.IdConta, conta.ValorAplicado, conta.Saldo);
 
             var produtoEntity = _mapper.Map<ProductEntity>(product);
 
@@ -52,7 +57,7 @@ namespace Aliquota.Domain.Services.Services
 
         private void ValidateProduct(int id)
         {
-            if (!_productRepository.GetAplicacoes().Any(x => x.Id == id))
+            if (_productRepository.Get(id) == null)
                 throw new InvalidProductException("Aplicação não encontrada.");
         }
 
@@ -70,6 +75,11 @@ namespace Aliquota.Domain.Services.Services
             if (!produtoEntity.Ativo)
             {
                 throw new InvalidProductException("Produto já resgatado.");
+            }
+
+            if(produtoEntity.DtAplicacao > product.DtResgate)
+            {
+                throw new InvalidProductException("Data de resgate menor do que a de aplicação.");
             }
 
             var compare = product.DtResgate - produtoEntity.DtAplicacao;
@@ -96,13 +106,14 @@ namespace Aliquota.Domain.Services.Services
             product.Valor = valorAcumulado - newValue;
             product.Id = id;
 
+            var updateConta = _contaRepository.Get(produtoEntity.IdConta);
+            updateConta.ValorAplicado -= produtoEntity.Valor;
+            updateConta.Saldo += valorAcumulado - newValue;
+            _contaRepository.Depositar(updateConta);
+
             var entidade = _mapper.Map<ProductEntity>(product);
 
             var resgatar = _productRepository.Resgatar(entidade);
-
-            var updateConta = _contaService.Get(product.Conta.Id);
-            updateConta.Saldo = valorAcumulado - newValue;
-            _contaService.Depositar(updateConta.Id, updateConta);
 
             return _mapper.Map<ProductDto>(resgatar);
         }

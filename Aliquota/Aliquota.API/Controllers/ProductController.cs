@@ -58,5 +58,39 @@ namespace Aliquota.API.Controllers
                 throw;
             }
         }
+
+        [HttpGet]
+        [Route("aplicacoes")]
+        public IActionResult GetAplicacoes()
+        {
+            try
+            {
+                var result = _productService.GetAplicacoes();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("resgates")]
+        public IActionResult GetResgates()
+        {
+            try
+            {
+                var result = _productService.GetResgastes();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
+        }
     }
 }

@@ -26,18 +26,35 @@ namespace Aliquota.API.Controllers
         [Route("{id}")]
         public IActionResult Get(int id)
         {
-            var result = _user.Get(id);
+            try
+            {
+                var result = _user.Get(id);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
         }
 
         [HttpGet]
         [Route("getAll")]
         public IActionResult GetAll()
         {
-            var result = _user.GetAll();
+            try
+            {
+                var result = _user.GetAll();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
+
         }
 
         [HttpPost]

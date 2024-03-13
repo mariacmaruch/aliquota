@@ -1,6 +1,5 @@
 ﻿using Aliquota.Domain.Entities;
 using Aliquota.Domain.Interfaces.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Aliquota.Infrastructure.Repositories
 {

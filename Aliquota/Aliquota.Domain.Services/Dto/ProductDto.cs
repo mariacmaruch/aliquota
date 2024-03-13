@@ -7,6 +7,6 @@
         public DateTime DtResgate { get; set; }
         public double Valor { get; set; }
         public bool Ativo { get; set; }
-        public ContaDto Conta { get; set; }
+        public int IdConta { get; set; }
     }
 }

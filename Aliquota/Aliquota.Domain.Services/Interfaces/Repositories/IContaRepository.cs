@@ -6,7 +6,8 @@ namespace Aliquota.Domain.Interfaces.Repositories
     {
         ContaEntity Get(int id);
         ContaEntity Depositar(ContaEntity conta);
+        ContaEntity ValorAplicado(int id, double valAplicado, double valSaldo);
         IEnumerable<int> GetNumerosConta();
-
+        ContaEntity GetByNumero(int numero);
     }
 }
